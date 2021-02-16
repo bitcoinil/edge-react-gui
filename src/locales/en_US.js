@@ -772,7 +772,10 @@ const strings = {
   select_fio_address_address_to: 'FIO Address To',
   select_fio_address_address_from: 'FIO Address From',
   select_fio_address_address_memo: 'FIO Memo',
-  select_fio_address_address_memo_error: 'FIO Memo Error'
+  select_fio_address_address_memo_error: 'FIO Memo Error',
+
+  // Request Scene
+  request_balance: 'You have %s'
 }
 
 // export default strings
