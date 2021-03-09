@@ -177,6 +177,7 @@ class WalletListComponent extends React.PureComponent<Props> {
     exchangeRate?: number
   ): string {
     const { showBalance } = this.props
+    const denominationMultiplier = !isNaN(denomination.multiplier) ? denomination.multiplier : '1'
     let maxConversionDecimals = 6
     if (exchangeRate) {
       const precisionAdjustValue = precisionAdjust({
@@ -184,9 +185,9 @@ class WalletListComponent extends React.PureComponent<Props> {
         secondaryExchangeMultiplier: fiatDenomination.multiplier,
         exchangeSecondaryToPrimaryRatio: exchangeRate
       })
-      maxConversionDecimals = maxPrimaryCurrencyConversionDecimals(bns.log10(denomination.multiplier), precisionAdjustValue)
+      maxConversionDecimals = maxPrimaryCurrencyConversionDecimals(bns.log10(denominationMultiplier), precisionAdjustValue)
     }
-    const preliminaryCryptoAmount = truncateDecimals(bns.div(balance, denomination.multiplier, DIVIDE_PRECISION), maxConversionDecimals)
+    const preliminaryCryptoAmount = truncateDecimals(bns.div(balance, denominationMultiplier, DIVIDE_PRECISION), maxConversionDecimals)
     const finalCryptoAmount = formatNumber(decimalOrZero(preliminaryCryptoAmount, maxConversionDecimals)) // check if infinitesimal (would display as zero), cut off trailing zeroes
     return showBalance ? `${denomination.symbol ? denomination.symbol + ' ' : ''}${finalCryptoAmount}` : ''
   }
@@ -202,7 +203,8 @@ class WalletListComponent extends React.PureComponent<Props> {
       const isToken = guiWallet.currencyCode !== data.item.fullCurrencyCode
       const walletCodesArray = data.item.fullCurrencyCode.split('-')
       const currencyCode = isToken ? walletCodesArray[1] : walletCodesArray[0]
-      const balance = isToken ? guiWallet.nativeBalances[currencyCode] : guiWallet.primaryNativeBalance
+      const balanceString = isToken ? guiWallet.nativeBalances[currencyCode] : guiWallet.primaryNativeBalance
+      const balance = !isNaN(balanceString) ? balanceString : '0'
 
       const walletFiatSymbol = getFiatSymbol(guiWallet.isoFiatCurrencyCode)
 
